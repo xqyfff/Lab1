@@ -14,8 +14,9 @@ class TextGraph:
         self.graph = defaultdict(dict)  # Adjacency list representation
         self.nodes = set()              # All unique words/nodes
         self.pagerank = {}              # PageRank values
-    
-    def process_text(self, text):
+
+    @staticmethod
+    def process_text(text):
         """Process raw text into words, ignoring punctuation and case"""
         # Replace all non-alphabetic characters with spaces and lowercase
         text = re.sub(r'[^a-zA-Z]', ' ', text).lower()
@@ -316,7 +317,8 @@ class TextGraph:
         
         return walk_text
     
-    def _check_user_stop(self):
+    @staticmethod
+    def _check_user_stop():
         """Check if user wants to stop the random walk (Windows-compatible)"""
         return msvcrt.kbhit() and msvcrt.getch() == b'\r'  # Enter key pressed
 
