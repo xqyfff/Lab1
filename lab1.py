@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import msvcrt  # Windows-specific module for keyboard input
 import time
-from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_extraction.text import TfidfVectorizer
 '''用于正则表达式匹配、随机操作、堆操作、默认字典、绘图、图结构处理、Windows 键盘输入以及时间操作的模块'''
 
 class TextGraph:
@@ -134,9 +134,10 @@ class TextGraph:
         
         new_text.append(words[-1])  # Add the last word
         return ' '.join(new_text)
-    
+
+    # COVERAGE: START: calc_shortest_path
     def calc_shortest_path(self, word1, word2=None):
-        """Calculate shortest path between two words or from one word to all others"""
+        """Calculate short path between two words or from one word to all others"""
         word1 = word1.lower()
         if word2:
             word2 = word2.lower()
@@ -198,15 +199,18 @@ class TextGraph:
         path.reverse()
         
         return f"Shortest path from {word1} to {word2}: {' -> '.join(path)} (length: {distances[word2]})"
-    
+
+    # COVERAGE: END: calc_shortest_path
+
+    # -- coverage: end shortest_path --
     def calc_pagerank(self, word=None, damping=0.85, iterations=100):
         """Calculate PageRank for all nodes or a specific node"""
         if not self.graph:
             return "Graph is empty. Please build the graph first."
         
         # Initialize PR values
-        N = len(self.nodes)
-        pr = {node: 1/N for node in self.nodes}
+        nodes_len = len(self.nodes)
+        pr = {node: 1/nodes_len for node in self.nodes}
 
 
 
@@ -221,7 +225,7 @@ class TextGraph:
                 if node not in self.graph or not self.graph[node]:
                     dangling_pr += pr[node]
             # Distribute dangling PR equally among all nodes
-            dangling_contribution = dangling_pr / N if N > 0 else 0
+            dangling_contribution = dangling_pr / nodes_len if nodes_len > 0 else 0
             
             for node in self.nodes:
                 # Calculate sum of PR of incoming nodes divided by their out-degree
@@ -232,7 +236,7 @@ class TextGraph:
                         incoming_sum += pr[incoming_node] * (self.graph[incoming_node][node] / outgoing_links)
                 
                 # Apply PageRank formula with dangling node contribution
-                new_pr[node] = (1 - damping)/N + damping * (incoming_sum + dangling_contribution)
+                new_pr[node] = (1 - damping)/nodes_len + damping * (incoming_sum + dangling_contribution)
             
             pr = new_pr
         
@@ -274,7 +278,9 @@ class TextGraph:
                 # Get all possible next nodes and their weights
                 next_nodes = list(self.graph[current_node].items())
                 total_weight = sum(weight for _, weight in next_nodes)
-                
+
+                next_node=None
+
                 # Choose next node based on edge weights
                 rand_val = random.uniform(0, total_weight)
                 cumulative = 0

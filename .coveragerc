@@ -1,0 +1,12 @@
+[run]
+source = .  # 从当前目录开始搜索
+
+[report]
+# 只保留包含calc_shortest_path的文件
+include =
+    lab1.py
+
+# 排除其他无关函数和代码
+omit =
+    lab1.py:*  # 排除所有
+    !lab1.py:*calc_shortest_path*  # 但保留包含calc_shortest_path的行
